@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Alguém Especial</title>
+    <!-- Fallback if JS fails -->
+    <noscript>
+        <style>
+            body { background: #fff5f5; color: #742a2a; display: flex; align-items: center; justify-content: center; height: 100vh; text-align: center; font-family: sans-serif; }
+            .no-js-box { border: 2px solid #feb2b2; padding: 2rem; border-radius: 1rem; }
+        </style>
+        <div class="no-js-box">
+            <h1>Ops! O amor precisa de JavaScript.</h1>
+            <p>Por favor, habilite o JavaScript no seu navegador para ver esta surpresa.</p>
+        </div>
+    </noscript>
+
+    <style>
+        :root {
+            /* Tema Suave (Default) */
+            --bg-primary: #fffafa;
+            --bg-secondary: #ffffff;
+            --accent: #ff758f;
+            --accent-hover: #ff4d6d;
+            --text-main: #4a5568;
+            --text-muted: #718096;
+            --card-shadow: 0 10px 25px -5px rgba(255, 117, 143, 0.1), 0 8px 10px -6px rgba(255, 117, 143, 0.1);
+            --gradient-1: #ff7eb3;
+            --gradient-2: #ff758c;
+            --border-color: #ffe4e6;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="night"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --accent: #fb7185;
+            --accent-hover: #f43f5e;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            --gradient-1: #4c1d95;
+            --gradient-2: #831843;
+            --border-color: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background-color 0.5s ease;
+        }
+
+        /* Utils */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .section {
+            padding: 5rem 0;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: var(--transition);
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            text-decoration: none;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 117, 143, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 117, 143, 0.6);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            font-size: 0.8rem;
+            padding: 0.5rem 1.2rem;
+        }
+
+        /* Background Animado */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .bg-gradient-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: linear-gradient(-45deg, var(--bg-primary), var(--bg-secondary), var(--bg-primary));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Header / Theme Toggle */
+        header {
+            padding: 1.5rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            background: rgba(var(--bg-primary), 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        /* Hero */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding-top: 4rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--accent), var(--gradient-1));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        /* Gallery */
+        .gallery-grid {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        }
+
+        .gallery-item {
+            aspect-ratio: 1/1;
+            border-radius: 1rem;
+            overflow: hidden;
+            position: relative;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* CTA / Responder (Match the print) */
+        .cta-container {
+            background: var(--bg-secondary);
+            border-radius: 2rem;
+            padding: 3rem 2rem;
+            border: 2px solid #a0c4ff; /* Borda azul suave do print */
+            box-shadow: var(--card-shadow);
+            max-width: 800px;
+            margin: 4rem auto;
+            text-align: center;
+        }
+
+        .cta-container h3 {
+            font-size: 1.4rem;
+            color: #4a5568;
+            margin-bottom: 2rem;
+        }
+
+        .message-input-wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            border: 1px solid #ffe4e6;
+            background: #fffcfc;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 1rem;
+            resize: none;
+            transition: var(--transition);
+            min-height: 120px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(255, 117, 143, 0.1);
+        }
+
+        /* Pulse Animation for main button */
+        @keyframes pulse-heart {
+            0% { box-shadow: 0 0 0 0 rgba(255, 117, 143, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 117, 143, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 117, 143, 0); }
+        }
+
+        .pulse-btn {
+            animation: pulse-heart 2s infinite;
+        }
+
+        /* Others */
+        .card-grid {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+        }
+        
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            padding: 10px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            font-size: 0.8rem;
+            text-align: center;
+            opacity: 0;
+            transition: 0.3s;
+        }
+        .gallery-item:hover .gallery-overlay { opacity: 1; }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #38a169;
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            z-index: 2000;
+            transition: 0.3s;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient-overlay"></div>
+    <canvas id="bg-canvas"></canvas>
+
+    <header>
+        <div class="container header-content">
+            <div style="font-weight: 800; color: var(--accent); font-size: 1.2rem;">✨ Para Você</div>
+            <button class="theme-toggle" id="theme-toggle">
+                <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Hero -->
+        <section class="hero" id="hero">
+            <h1 id="hero-title">Olá, Especial.</h1>
+            <p id="hero-subtitle">Preparei algo simples para celebrar o quão bom é ter você por perto.</p>
+            <button class="btn btn-primary pulse-btn" id="open-surprise-btn">Abrir surpresa ❤️</button>
+        </section>
+
+        <!-- Por que você é especial -->
+        <section class="section" id="special-reasons">
+            <h2 style="text-align: center; margin-bottom: 3rem; font-size: 2rem;">Por que você é especial</h2>
+            <div class="card-grid" id="reasons-container"></div>
+        </section>
+
+        <!-- Galeria -->
+        <section class="section" id="gallery">
+            <h2 style="text-align: center; margin-bottom: 3rem; font-size: 2rem;">Nossa Galeria</h2>
+            <div class="gallery-grid" id="gallery-container"></div>
+        </section>
+
+        <!-- Momentos -->
+        <section class="section" id="moments">
+            <h2 style="text-align: center; margin-bottom: 3rem; font-size: 2rem;">Momentos que eu gosto</h2>
+            <div class="card-grid" id="moments-container"></div>
+        </section>
+
+        <!-- Mensagem -->
+        <section class="section" id="letter">
+            <div style="background: var(--bg-secondary); border-radius: 2rem; padding: 3rem; border: 1px solid var(--border-color); text-align: center;">
+                <blockquote id="main-message" style="font-size: 1.25rem; font-style: italic; margin-bottom: 2rem;"></blockquote>
+                <div class="signature" id="signature" style="font-family: 'Georgia', serif; font-size: 1.5rem; color: var(--accent);"></div>
+            </div>
+        </section>
+
+        <!-- CTA Final (Updated to match print and request) -->
+        <section class="section" id="cta">
+            <div class="cta-container">
+                <h3>Gostou? Me conta o que achou.</h3>
+                <div class="message-input-wrapper">
+                    <textarea id="feedback-text" placeholder="Escreva algo se quiser..."></textarea>
+                    <button class="btn btn-primary pulse-btn" id="whatsapp-btn" style="padding: 1rem 3rem; font-size: 1.1rem;">
+                        Enviar no WhatsApp ❤️
+                    </button>
+                    <button class="btn btn-secondary" id="copy-fallback-btn">
+                        Ou apenas copiar 📋
+                    </button>
+                </div>
+                <p style="margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted)">A mensagem vai direto pro meu WhatsApp! ✨</p>
+            </div>
+        </section>
+    </main>
+
+    <footer style="text-align: center; padding: 4rem 0; color: var(--text-muted); font-size: 0.8rem;">
+        Feito com carinho para alguém incrível.
+    </footer>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">Copiado! ✅</div>
+
+    <script>
+        const content = {
+            nome: "Especial",
+            frases: [
+                { title: "Sua Energia", desc: "Tem algo em você que simplesmente ilumina o ambiente quando você chega.", icon: "✨" },
+                { title: "Seu Papo", desc: "Nossas conversas fluem sem esforço, e isso é raro de encontrar hoje em dia.", icon: "💬" },
+                { title: "Seu Sorriso", desc: "É sincero, leve e faz com que tudo ao redor pareça mais tranquilo.", icon: "😊" }
+            ],
+            galeria: [
+                { label: "O Primeiro Encontro", img: "https://i.ibb.co/Zppt9mR6/motion-photo-3382791903020539242.jpg" },
+                { label: "Aquele Sorriso", img: "https://i.ibb.co/1J46P0Ks/motion-photo-112712845892630156.jpg" },
+                { label: "Papo Infinito", img: "https://i.ibb.co/tM29Zvdv/IMG-20260109-WA0040.jpg" },
+                { label: "Momento Relax", img: "https://i.ibb.co/93ykWVJH/motion-photo-6918914948343748658.jpg" },
+                { label: "Cumplicidade", img: "https://i.ibb.co/W4YhXWX1/motion-photo-5912641990217497619.jpg" },
+                { label: "Novas Histórias", img: "https://i.ibb.co/hRnTPnBm/download.png" }
+            ],
+            momentos: [
+                { title: "Primeira conversa", desc: "Aquele frio na barriga de não saber que ia dar tão certo.", date: "Um dia desses" },
+                { title: "Risadas bobas", desc: "Quando perdemos a noção do tempo rindo de nada.", date: "Sempre que nos vemos" },
+                { title: "O silêncio confortável", desc: "Estar com você sem precisar falar nada, só curtindo o momento.", date: "Momentos de paz" },
+                { title: "Suporte e Carinho", desc: "Saber que posso contar com seu abraço no final do dia.", date: "Presente" }
+            ],
+            mensagem: "Fiz essa página porque acho que momentos e pessoas especiais merecem ser celebrados. Não é nada exagerado, apenas um lembrete do quanto eu curto sua companhia.",
+            assinatura: "Com carinho, Eu"
+        };
+
+        const PHONE_NUMBER = "5567998859254"; // Seu número com DDI (55)
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Render basic content
+            document.getElementById('hero-title').textContent = `Olá, ${content.nome}.`;
+            document.getElementById('main-message').textContent = `"${content.mensagem}"`;
+            document.getElementById('signature').textContent = `- ${content.assinatura}`;
+
+            // Render Reasons
+            const reasonsContainer = document.getElementById('reasons-container');
+            content.frases.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `<h3>${item.icon} ${item.title}</h3><p>${item.desc}</p>`;
+                reasonsContainer.appendChild(card);
+            });
+
+            // Render Gallery
+            const galleryContainer = document.getElementById('gallery-container');
+            content.galeria.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'gallery-item';
+                div.innerHTML = `<img src="${item.img}" alt="${item.label}"><div class="gallery-overlay">${item.label}</div>`;
+                galleryContainer.appendChild(div);
+            });
+
+            // Render Moments
+            const momentsContainer = document.getElementById('moments-container');
+            content.momentos.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `<small>${item.date}</small><h3>${item.title}</h3><p>${item.desc}</p>`;
+                momentsContainer.appendChild(card);
+            });
+
+            // Theme Toggle
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-icon');
+            let theme = localStorage.getItem('theme') || 'soft';
+            const setIcons = (t) => themeIcon.innerHTML = t === 'night' ? '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>' : '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>';
+            document.body.setAttribute('data-theme', theme);
+            setIcons(theme);
+            themeToggle.onclick = () => {
+                theme = theme === 'soft' ? 'night' : 'soft';
+                document.body.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+                setIcons(theme);
+            };
+
+            // Scroll animations
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.section').forEach(s => observer.observe(s));
+
+            // WHATSAPP REDIRECT LOGIC
+            const whatsappBtn = document.getElementById('whatsapp-btn');
+            const feedbackText = document.getElementById('feedback-text');
+            const copyFallbackBtn = document.getElementById('copy-fallback-btn');
+            const toast = document.getElementById('toast');
+
+            const getMessage = () => {
+                const val = feedbackText.value.trim();
+                return val ? `Ei! Curti demais a página especial que você fez. ❤️\n\nMinha mensagem: ${val}` : "Ei! Curti demais a página especial que você fez. ❤️ Achei muito fofo!";
+            };
+
+            whatsappBtn.onclick = () => {
+                const text = encodeURIComponent(getMessage());
+                window.open(`https://wa.me/${PHONE_NUMBER}?text=${text}`, '_blank');
+            };
+
+            copyFallbackBtn.onclick = () => {
+                navigator.clipboard.writeText(getMessage()).then(() => {
+                    toast.classList.add('show');
+                    setTimeout(() => toast.classList.remove('show'), 2000);
+                });
+            };
+
+            // Simple Canvas Bg
+            const canvas = document.getElementById('bg-canvas');
+            const ctx = canvas.getContext('2d');
+            let p = [];
+            const res = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+            window.onresize = res; res();
+            for(let i=0; i<30; i++) p.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, s:Math.random()*2+1, vx:Math.random()-0.5, vy:Math.random()-0.5});
+            const anim = () => {
+                ctx.clearRect(0,0,canvas.width,canvas.height);
+                ctx.fillStyle = "rgba(255, 117, 143, 0.3)";
+                p.forEach(i => {
+                    i.x += i.vx; i.y += i.vy;
+                    if(i.x<0 || i.x>canvas.width) i.vx *= -1;
+                    if(i.y<0 || i.y>canvas.height) i.vy *= -1;
+                    ctx.beginPath(); ctx.arc(i.x, i.y, i.s, 0, Math.PI*2); ctx.fill();
+                });
+                requestAnimationFrame(anim);
+            };
+            anim();
+        });
+    </script>
+</body>
+</html>
